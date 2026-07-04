@@ -18,7 +18,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: '1.22'
 
       - name: Verify build
         run: |
@@ -29,17 +29,18 @@ jobs:
       - name: Setup Fly.io CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Deploy to Fly.io
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: flyctl deploy --remote-only
-
-      - name: Set secrets on Fly.io
+      - name: Create app if needed and set secrets
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
+          flyctl apps create pin-sos --org personal 2>/dev/null || echo "App already exists"
           flyctl secrets set \
             PANEL_TOKEN="${{ secrets.PANEL_TOKEN }}" \
             TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}" \
             TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}" \
-            || echo "Secrets partially set - some may be pending"
+            --app pin-sos
+
+      - name: Deploy to Fly.io
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: flyctl deploy --remote-only --app pin-sos
