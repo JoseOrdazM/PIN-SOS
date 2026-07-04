@@ -45,7 +45,7 @@ primary_region = "mia"
     port = 443
     handlers = ["tls", "http"]
 
-  [[services.concurrency]]
+  [services.concurrency]
     type = "connections"
     hard_limit = 100
     soft_limit = 50
