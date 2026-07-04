@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type Notifier struct {
@@ -133,11 +134,13 @@ func (n *Notifier) sendPhoto(photoPath string) error {
 }
 
 func escapeMarkdown(s string) string {
-	// Escape MarkdownV2 special chars
-	special := []string{"_", "*", "[", "]", "(", ")", "~", "`", ">", "#", "+", "-", "=", "|", "{", "}", ".", "!"}
-	result := s
-	for _, ch := range special {
-		// Simple replacement approach - not perfect but works for basic cases
-	}
-	return result
+	// Escape markdown special characters
+	replacer := strings.NewReplacer(
+		"_", "\\_",
+		"*", "\\*",
+		"`", "\\`",
+		"[", "\\[",
+		"]", "\\]",
+	)
+	return replacer.Replace(s)
 }
