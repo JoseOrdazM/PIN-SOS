@@ -96,14 +96,29 @@ async function submitAlert(e) {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
-  btn.innerHTML = '<span class="btn-icon">⏳</span> ENVIANDO ALERTA...';
+  btn.innerHTML = '<span class="btn-icon">⏳</span> PREPARANDO...';
 
   const form = document.getElementById('alertForm');
   const formData = new FormData(form);
 
+  // Comprimir foto antes de enviar si existe
+  const photoInput = document.getElementById('photo');
+  if (photoInput && photoInput.files && photoInput.files[0]) {
+    btn.innerHTML = '<span class="btn-icon">⏳</span> COMPRIMIENDO FOTO...';
+    try {
+      const compressed = await compressImage(photoInput.files[0], 800, 0.7);
+      formData.delete('photo');
+      formData.append('photo', compressed, photoInput.files[0].name);
+    } catch (err) {
+      console.warn('Compresión falló, usando original:', err);
+    }
+  }
+
+  btn.innerHTML = '<span class="btn-icon">⏳</span> ENVIANDO ALERTA...';
+
+  // Usar xhr en vez de fetch para tener progreso
   try {
-    const res = await fetch('/api/alert', { method: 'POST', body: formData });
-    const data = await res.json();
+    const data = await uploadWithProgress(formData, btn);
 
     if (data.ok) {
       document.getElementById('alertId').textContent = data.id;
@@ -123,6 +138,72 @@ async function submitAlert(e) {
     btn.innerHTML = '<span class="btn-icon">🆘</span> ENVIAR ALERTA SOS';
     checkForm();
   }
+}
+
+function compressImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        const ratio = Math.min(maxDim / w, maxDim / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(blob => {
+        if (blob) {
+          const newFile = new File([blob], file.name, { type: 'image/jpeg' });
+          resolve(newFile);
+        } else {
+          reject(new Error('Canvas toBlob failed'));
+        }
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = () => reject(new Error('Image load failed'));
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function uploadWithProgress(formData, btnElement) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/api/alert', true);
+    xhr.timeout = 60000;
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 100);
+        btnElement.innerHTML = `<span class="btn-icon">⏳</span> ENVIANDO... ${pct}%`;
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          resolve(JSON.parse(xhr.responseText));
+        } catch (e) {
+          reject(new Error('Invalid response'));
+        }
+      } else {
+        try {
+          const err = JSON.parse(xhr.responseText);
+          reject(new Error(err.error || 'Error del servidor'));
+        } catch (e) {
+          reject(new Error('Error del servidor (' + xhr.status + ')'));
+        }
+      }
+    };
+
+    xhr.onerror = () => reject(new Error('Error de conexión'));
+    xhr.ontimeout = () => reject(new Error('Tiempo de espera agotado'));
+
+    xhr.send(formData);
+  });
 }
 
 function resetForm() {
