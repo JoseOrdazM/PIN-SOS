@@ -1,7 +1,7 @@
 # fly.toml app configuration for PIN-SOS
 app = "pin-sos"
 
-primary_region = "mia"
+primary_region = "dfw"
 
 [build]
   dockerfile = "Dockerfile"
