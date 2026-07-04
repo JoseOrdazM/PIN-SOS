@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Panel SOS - Rescatistas</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="panel-body">
+<div class="panel-container">
+  <header class="panel-header">
+    <h1>🚨 Panel SOS</h1>
+    <div class="panel-controls">
+      <span id="alertCounter" class="counter">0 activas</span>
+      <select id="statusFilter">
+        <option value="ACTIVA">Activas</option>
+        <option value="">Todas</option>
+        <option value="ATENDIDA">Atendidas</option>
+        <option value="CERRADA">Cerradas</option>
+      </select>
+      <button id="refreshBtn" class="btn-small">🔄</button>
+    </div>
+  </header>
+  <div id="alertsList" class="alerts-list">
+    <div class="loading">Cargando alertas...</div>
+  </div>
+</div>
+
+<script src="/panel.js"></script>
+</body>
+</html>

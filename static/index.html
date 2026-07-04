@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#cc0000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>SOS Venezuela</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo">🚨</div>
+    <h1>SOS Venezuela</h1>
+    <p class="subtitle">Alerta ciudadana de emergencia</p>
+  </header>
+
+  <form id="alertForm">
+    <div class="card location-card">
+      <button type="button" id="getLocation" class="btn-location">
+        📍 OBTENER MI UBICACIÓN
+      </button>
+      <div id="locationStatus" class="location-status">
+        <span>Presiona el botón para obtener tu ubicación</span>
+      </div>
+      <div id="map" class="map-container"></div>
+      <input type="hidden" id="lat" name="lat">
+      <input type="hidden" id="lng" name="lng">
+    </div>
+
+    <div class="card">
+      <label for="name">Nombre completo</label>
+      <input type="text" id="name" name="name" placeholder="Tu nombre" required>
+
+      <label for="phone">Teléfono de contacto</label>
+      <input type="tel" id="phone" name="phone" placeholder="+58 XXX XXX XXXX" required>
+
+      <label for="description">Describe tu emergencia</label>
+      <textarea id="description" name="description" rows="4" placeholder="¿Qué está pasando? ¿Qué necesitas?" required></textarea>
+
+      <label for="photo">Foto (opcional)</label>
+      <input type="file" id="photo" name="photo" accept="image/*" capture="environment">
+    </div>
+
+    <button type="submit" id="submitBtn" class="btn-danger" disabled>
+      <span class="btn-icon">🆘</span>
+      ENVIAR ALERTA SOS
+    </button>
+  </form>
+
+  <div id="confirmation" class="confirmation hidden">
+    <div class="confirmation-icon">✅</div>
+    <h2>Alerta enviada</h2>
+    <p>Tu alerta <strong>#<span id="alertId"></span></strong> ha sido recibida.</p>
+    <p>Un rescatista se pondrá en contacto contigo lo antes posible.</p>
+    <button onclick="resetForm()" class="btn-secondary">ENVIAR OTRA ALERTA</button>
+  </div>
+
+  <footer>
+    <p>En caso de emergencia real, contacta también a las autoridades locales.</p>
+  </footer>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+pinsos
+pinsos.exe
+*.test
+*.out
+uploads/*
+!uploads/.gitkeep
+/data/
+.env
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
