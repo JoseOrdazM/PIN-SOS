@@ -96,7 +96,7 @@ async function submitAlert(e) {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
-  btn.innerHTML = '<span class="btn-icon">⏳</span> PREPARANDO...';
+  btn.innerHTML = '<span class="btn-sos-text">⏳</span><span class="btn-sos-sub">PREPARANDO...</span>';
 
   const form = document.getElementById('alertForm');
   const formData = new FormData(form);
@@ -104,7 +104,7 @@ async function submitAlert(e) {
   // Comprimir foto antes de enviar si existe
   const photoInput = document.getElementById('photo');
   if (photoInput && photoInput.files && photoInput.files[0]) {
-    btn.innerHTML = '<span class="btn-icon">⏳</span> COMPRIMIENDO FOTO...';
+    btn.innerHTML = '<span class="btn-sos-text">⏳</span><span class="btn-sos-sub">COMPRIMIENDO FOTO...</span>';
     try {
       const compressed = await compressImage(photoInput.files[0], 800, 0.7);
       formData.delete('photo');
@@ -114,7 +114,7 @@ async function submitAlert(e) {
     }
   }
 
-  btn.innerHTML = '<span class="btn-icon">⏳</span> ENVIANDO ALERTA...';
+  btn.innerHTML = '<span class="btn-sos-text">⏳</span><span class="btn-sos-sub">ENVIANDO ALERTA...</span>';
 
   // Usar xhr en vez de fetch para tener progreso
   try {
@@ -128,14 +128,14 @@ async function submitAlert(e) {
       alert('Error: ' + (data.error || 'No se pudo enviar la alerta'));
       btn.disabled = false;
       btn.classList.remove('loading');
-      btn.innerHTML = '<span class="btn-icon">🆘</span> ENVIAR ALERTA SOS';
+      btn.innerHTML = '<span class="btn-sos-text">SOS</span><span class="btn-sos-sub">ENVIAR ALERTA</span>';
       checkForm();
     }
   } catch (err) {
     alert('Error de conexión. Verifica tu internet e intenta de nuevo.');
     btn.disabled = false;
     btn.classList.remove('loading');
-    btn.innerHTML = '<span class="btn-icon">🆘</span> ENVIAR ALERTA SOS';
+    btn.innerHTML = '<span class="btn-sos-text">SOS</span><span class="btn-sos-sub">ENVIAR ALERTA</span>';
     checkForm();
   }
 }
@@ -178,7 +178,7 @@ function uploadWithProgress(formData, btnElement) {
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable) {
         const pct = Math.round((e.loaded / e.total) * 100);
-        btnElement.innerHTML = `<span class="btn-icon">⏳</span> ENVIANDO... ${pct}%`;
+        btnElement.innerHTML = `<span class="btn-sos-text">⏳</span><span class="btn-sos-sub">ENVIANDO... ${pct}%</span>`;
       }
     };
 
