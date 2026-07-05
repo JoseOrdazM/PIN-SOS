@@ -3,9 +3,9 @@
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh}
 .container{max-width:480px;margin:0 auto;padding:16px;padding-bottom:32px}
 header{text-align:center;padding:24px 0 16px}
-.sos-badge{font-size:72px;font-weight:900;color:var(--red);letter-spacing:8px;line-height:1;margin-bottom:4px;text-shadow:0 0 30px rgba(204,0,0,.3)}
-h1{font-size:20px;font-weight:400;color:var(--text-muted);margin-top:0}
-.subtitle{color:var(--text-muted);font-size:13px;margin-top:2px}
+.logo{font-size:48px;margin-bottom:8px}
+h1{font-size:24px;font-weight:700;color:#fff}
+.subtitle{color:var(--text-muted);font-size:14px;margin-top:4px}
 .card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,.08)}
 .location-card{text-align:center}
 .btn-location{width:100%;padding:14px;font-size:16px;font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;transition:background .2s}
@@ -23,13 +23,12 @@ input,textarea,select{width:100%;padding:12px;font-size:15px;background:rgba(255
 input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
 textarea{resize:vertical;min-height:80px;font-family:inherit}
 input[type="file"]{padding:8px;font-size:14px}
-.btn-sos{width:100%;padding:20px 16px;background:var(--red);color:#fff;border:none;border-radius:16px;cursor:pointer;transition:all .2s;margin-top:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.btn-sos:hover:not(:disabled){background:var(--red-dark);transform:scale(1.02)}
-.btn-sos:active:not(:disabled){transform:scale(.98)}
-.btn-sos:disabled{opacity:.5;cursor:not-allowed}
-.btn-sos.loading{opacity:.7;pointer-events:none}
-.btn-sos-text{font-size:42px;font-weight:900;letter-spacing:12px;line-height:1}
-.btn-sos-sub{font-size:14px;font-weight:600;letter-spacing:2px;opacity:.9}
+.btn-danger{width:100%;padding:16px;font-size:18px;font-weight:700;background:var(--red);color:#fff;border:none;border-radius:12px;cursor:pointer;transition:all .2s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-danger:hover:not(:disabled){background:var(--red-dark)}
+.btn-danger:active:not(:disabled){transform:scale(.98)}
+.btn-danger:disabled{opacity:.4;cursor:not-allowed}
+.btn-danger.loading{opacity:.7;pointer-events:none}
+.btn-icon{font-size:24px}
 .confirmation{text-align:center;padding:40px 16px}
 .confirmation-icon{font-size:64px;margin-bottom:16px}
 .confirmation h2{font-size:22px;color:var(--success);margin-bottom:8px}
