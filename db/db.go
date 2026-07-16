@@ -8,16 +8,16 @@ import (
 )
 
 type Alert struct {
-	ID          int64  `json:"id"`
-	CreatedAt   string `json:"created_at"`
-	Name        string `json:"name"`
-	Phone       string `json:"phone"`
-	Description string `json:"description"`
+	ID          int64   `json:"id"`
+	CreatedAt   string  `json:"created_at"`
+	Name        string  `json:"name"`
+	Phone       string  `json:"phone"`
+	Description string  `json:"description"`
 	Lat         float64 `json:"lat"`
 	Lng         float64 `json:"lng"`
-	MapsLink    string `json:"maps_link"`
-	PhotoPath   string `json:"photo_path,omitempty"`
-	Status      string `json:"status"`
+	MapsLink    string  `json:"maps_link"`
+	PhotoPath   string  `json:"photo_path,omitempty"`
+	Status      string  `json:"status"`
 }
 
 type DB struct {
@@ -134,4 +134,42 @@ func (d *DB) UpdateStatus(id int64, status string) error {
 		return fmt.Errorf("alert %d not found", id)
 	}
 	return nil
+}
+
+// DeleteOldClosed removes CERRADA alerts older than the given number of days
+// and returns the photo paths of the deleted rows so the caller can remove
+// the files. Data minimization: a closed alert kept forever is a liability
+// for the people who asked for help, not an asset.
+func (d *DB) DeleteOldClosed(days int) ([]string, error) {
+	rows, err := d.conn.Query(`
+		SELECT COALESCE(photo_path,'') FROM alerts
+		WHERE status = 'CERRADA'
+		  AND created_at < datetime('now', ?)
+		  AND photo_path IS NOT NULL AND photo_path != ''
+	`, fmt.Sprintf("-%d days", days))
+	if err != nil {
+		return nil, fmt.Errorf("select old closed: %w", err)
+	}
+	var photos []string
+	for rows.Next() {
+		var p string
+		if err := rows.Scan(&p); err != nil {
+			rows.Close()
+			return nil, fmt.Errorf("scan photo path: %w", err)
+		}
+		photos = append(photos, p)
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	_, err = d.conn.Exec(`
+		DELETE FROM alerts
+		WHERE status = 'CERRADA' AND created_at < datetime('now', ?)
+	`, fmt.Sprintf("-%d days", days))
+	if err != nil {
+		return photos, fmt.Errorf("delete old closed: %w", err)
+	}
+	return photos, nil
 }
